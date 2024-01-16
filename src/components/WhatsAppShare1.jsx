@@ -1,8 +1,11 @@
+import { useRef, useState } from "react";
 import data from "./data";
 import html2canvas from "html2canvas";
-import { useRef, useState } from "react";
+import { WhatsappShareButton, WhatsappIcon } from "react-share";
 
 export default function WhatsAppShare1() {
+  const shareUrl = "https://github.com/masudur0823";
+  const title = "Share me";
   const tableRef = useRef(null);
   const [imgurl, setImgurl] = useState();
   const handleShare = async () => {
@@ -10,21 +13,21 @@ export default function WhatsAppShare1() {
       const canvas = await html2canvas(tableRef.current);
       const imgData = canvas.toDataURL("image/png");
       setImgurl(imgData);
-      // const message = "This is text.";
-      // const blob = await fetch(imgData).then((response) => response.blob());
-
-      // // Create WhatsApp link with image data
-      // const whatsappLink = `https://api.whatsapp.com/send?text=${encodeURIComponent(
-      //   `${message} ${link} `
-      // )}`;
-
-      // // Open WhatsApp with image link
-      // window.open(whatsappLink, "_blank");
     }
   };
 
   return (
     <div className="main-layout">
+      <button onClick={() => navigator.share("hi")}>Share me</button>
+      <WhatsappShareButton
+        url={shareUrl}
+        title={title}
+        separator=":: "
+        className="Demo__some-network__share-button"
+      >
+        <WhatsappIcon size={32} round />
+      </WhatsappShareButton>
+
       {imgurl && <img src={imgurl} alt="imgurl" width={200} />}
 
       <button onClick={handleShare}>Capture and share</button>
