@@ -4,16 +4,34 @@ import html2canvas from "html2canvas";
 
 export default function WhatsAppShare1() {
   const imageRef = useRef(null);
-  const [image, setImage] = useState();
+  const [test, setTest] = useState([]);
+
   const tableRef = useRef(null);
   const [imgurl, setImgurl] = useState();
+
   const handleShare = async () => {
     if (tableRef.current) {
       const canvas = await html2canvas(tableRef.current);
       const imgData = canvas.toDataURL("image/png");
-      console.log(imgData);
       setImgurl(imgData);
+      const blob = new Blob([imgData], { type: "image/png" });
+      // const file = new File([blob], "heelo woerld", { type: "image/png" });
+      setTest(blob);
     }
+  };
+
+  const base64ToBlob = (base64String) => {
+    const parts = base64String.split(";base64,");
+    const contentType = parts[0].split(":")[1];
+    const raw = window.atob(parts[1]);
+    const rawLength = raw.length;
+    const uInt8Array = new Uint8Array(rawLength);
+
+    for (let i = 0; i < rawLength; ++i) {
+      uInt8Array[i] = raw.charCodeAt(i);
+    }
+
+    return new Blob([uInt8Array], { type: contentType });
   };
 
   const handleNativeShare = () => {
@@ -38,32 +56,43 @@ export default function WhatsAppShare1() {
   };
 
   const handleNativeFileShare = async () => {
-    console.log(imageRef.current.files);
-    const files = imageRef?.files;
-    if (files?.length === 0) {
-      console.log(`No files selected`);
-    }
+    // console.log(imageRef.current.files);
+    // const files = imageRef?.current?.files;
+    // const files = test;
+    // console.log(files);
 
-    // feature detecting navigator.canShare() also implies
-    // the same for the navigator.share()
-    if (!navigator?.canShare) {
-      console.log(`Your browser doesn't support the Web Share API.`);
+    const data = {
+      files: [
+        new File([test], "image.png", {
+          type: test.type,
+        }),
+      ],
+      title: "My title",
+      text: "My text",
+    };
+    if (navigator.canShare(data)) {
+      await navigator.share(data);
     }
-
-    if (navigator?.canShare({ files })) {
-      try {
-        await navigator?.share({
-          files,
-          title: "Images",
-          text: "Beautiful images",
-        });
-        console.log(`Shared!`);
-      } catch (error) {
-        console.log(`Error: ${error.message}`);
-      }
-    } else {
-      console.log(`Your system doesn't support sharing these files.`);
-    }
+    // if (files?.length === 0) {
+    //   console.log(`No files selected`);
+    // }
+    // if (!navigator?.canShare) {
+    //   console.log(`Your browser doesn't support the Web Share API.`);
+    // }
+    // if (navigator?.canShare({ files })) {
+    //   try {
+    //     await navigator?.share({
+    //       files,
+    //       title: "Images",
+    //       text: "Beautiful images",
+    //     });
+    //     console.log(`Shared!`);
+    //   } catch (error) {
+    //     console.log(`Error: ${error.message}`);
+    //   }
+    // } else {
+    //   console.log(`Your system doesn't support sharing these files.`);
+    // }
   };
 
   return (
