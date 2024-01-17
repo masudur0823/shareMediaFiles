@@ -1,11 +1,8 @@
-import { useRef } from "react";
 import data from "./data";
 import html2canvas from "html2canvas";
 
 export default function CaptureAndShare() {
-  const tableRef = useRef(null);
-
-  const captureTable = async () => {
+  const captureDomAndShare = async () => {
     const tableElement = document.getElementById("printDom");
     if (!tableElement) return;
 
@@ -42,14 +39,10 @@ export default function CaptureAndShare() {
     }
   };
 
-  const handleNativeFileShare = async () => {
-    captureTable();
-  };
-
   return (
     <>
       <div className="main-layout">
-        <button onClick={handleNativeFileShare} type="button">
+        <button onClick={captureDomAndShare} type="button">
           Share Table data!
         </button>
         <hr style={{ border: "1px dashed red", width: "100%" }} />
@@ -57,29 +50,34 @@ export default function CaptureAndShare() {
 
         {/* <button onClick={captureTable}>Capture and share</button> */}
       </div>
-      <div className="table-container" ref={tableRef}>
-        <table style={{ borderCollapse: "collapse" }} id="printDom">
-          <thead>
-            <tr>
-              <th>Id</th>
-              <th>First Name</th>
-              <th>Last Name</th>
-              <th>Email</th>
-              <th>Gender</th>
-            </tr>
-          </thead>
-          <tbody>
-            {data?.map((item, index) => (
-              <tr key={index}>
-                <td>{index}</td>
-                <td>{item?.first_name}</td>
-                <td>{item?.last_name}</td>
-                <td>{item?.email}</td>
-                <td>{item?.gender}</td>
+      <div className="table-container">
+        <div id="printDom">
+          <h2 style={{ marginBottom: 10, textAlign: "center" }}>
+            Table Caption
+          </h2>
+          <table style={{ borderCollapse: "collapse", margin: "0 auto" }}>
+            <thead>
+              <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Gender</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {data?.map((item, index) => (
+                <tr key={index}>
+                  <td>{index}</td>
+                  <td>{item?.first_name}</td>
+                  <td>{item?.last_name}</td>
+                  <td>{item?.email}</td>
+                  <td>{item?.gender}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </div>
     </>
   );

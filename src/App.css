@@ -14,11 +14,6 @@ td {
   border: 1px solid grey;
 }
 
-/* td:last-child {
-  border-right: 1px solid grey;
-  border-right: 1px solid grey;
-} */
-
 .table-container {
-  overflow: scroll;
+  overflow: auto;
 }
