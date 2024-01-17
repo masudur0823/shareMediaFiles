@@ -11,18 +11,12 @@ function WhatsAppShare2() {
 
     await html2canvas(divToCapture)
       .then((canvas) => {
-        // setOverflow("initial");
         const dataUrl = canvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = dataUrl;
         a.download = "captured_image.png";
         a.click();
-        // Remove the link from the body
         document.body.removeChild(a);
-        // Restore the original height
-        // divToCapture.style.height = originalHeight;
-        // divToCapture.style.width = originalWidth;
-        // setOverflow("auto");
       })
       .catch((error) => {
         console.error("Error capturing and downloading image:", error);

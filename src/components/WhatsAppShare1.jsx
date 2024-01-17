@@ -4,35 +4,9 @@ import html2canvas from "html2canvas";
 
 export default function WhatsAppShare1() {
   const imageRef = useRef(null);
-  const [test, setTest] = useState([]);
 
   const tableRef = useRef(null);
-  const [imgurl, setImgurl] = useState();
-
-  const handleShare = async () => {
-    if (tableRef.current) {
-      const canvas = await html2canvas(tableRef.current);
-      const imgData = canvas.toDataURL("image/png");
-      setImgurl(imgData);
-      const blob = new Blob([imgData], { type: "image/png" });
-      // const file = new File([blob], "heelo woerld", { type: "image/png" });
-      setTest(blob);
-    }
-  };
-
-  const base64ToBlob = (base64String) => {
-    const parts = base64String.split(";base64,");
-    const contentType = parts[0].split(":")[1];
-    const raw = window.atob(parts[1]);
-    const rawLength = raw.length;
-    const uInt8Array = new Uint8Array(rawLength);
-
-    for (let i = 0; i < rawLength; ++i) {
-      uInt8Array[i] = raw.charCodeAt(i);
-    }
-
-    return new Blob([uInt8Array], { type: contentType });
-  };
+  const [test, setTest] = useState("");
 
   const handleNativeShare = () => {
     if (navigator.share) {
@@ -55,64 +29,69 @@ export default function WhatsAppShare1() {
     }
   };
 
-  const handleNativeFileShare = async () => {
-    // console.log(imageRef.current.files);
-    // const files = imageRef?.current?.files;
-    // const files = test;
-    // console.log(files);
+  const captureTable = async () => {
+    const tableElement = document.getElementById("printDom"); // Replace with the actual ID of your table
+    if (!tableElement) return;
 
-    const data = {
-      files: [
-        new File([test], "image.png", {
-          type: test.type,
-        }),
-      ],
-      title: "My title",
-      text: "My text",
-    };
-    if (navigator.canShare(data)) {
-      await navigator.share(data);
+    try {
+      const canvas = await html2canvas(tableElement);
+      canvas.toBlob((blob) => {
+        const file = new File([blob], "table_capture.png", {
+          type: "image/png",
+        });
+        console.log(file);
+        setTest(file);
+        // Now you can use the 'file' object as needed (e.g., upload, download, etc.)
+      });
+    } catch (error) {
+      console.error("Error capturing table:", error);
     }
-    // if (files?.length === 0) {
-    //   console.log(`No files selected`);
-    // }
-    // if (!navigator?.canShare) {
-    //   console.log(`Your browser doesn't support the Web Share API.`);
-    // }
-    // if (navigator?.canShare({ files })) {
-    //   try {
-    //     await navigator?.share({
-    //       files,
-    //       title: "Images",
-    //       text: "Beautiful images",
-    //     });
-    //     console.log(`Shared!`);
-    //   } catch (error) {
-    //     console.log(`Error: ${error.message}`);
-    //   }
-    // } else {
-    //   console.log(`Your system doesn't support sharing these files.`);
-    // }
+  };
+
+  const handleNativeFileShare = async () => {
+    // const files = imageRef?.current?.files;
+    const files = [test];
+
+    if (files?.length === 0) {
+      console.log(`No files selected`);
+    }
+    if (!navigator?.canShare) {
+      console.log(`Your browser doesn't support the Web Share API.`);
+    }
+    if (navigator?.canShare({ files })) {
+      try {
+        await navigator?.share({
+          files,
+          title: "Images",
+          text: "Beautiful images",
+        });
+        console.log(`Shared!`);
+      } catch (error) {
+        console.log(`Error: ${error.message}`);
+      }
+    } else {
+      console.log(`Your system doesn't support sharing these files.`);
+    }
   };
 
   return (
-    <div className="main-layout">
-      <button onClick={handleNativeShare}>Share me</button>
-      <div>
-        <label for="files">Select images to share:</label>
-        <input type="file" accept="image/*" multiple ref={imageRef} />
+    <>
+      <div className="main-layout">
+        <button onClick={handleNativeShare}>Share me</button>
+        <div>
+          <label htmlFor="image">Select images to share:</label>
+          <input type="file" accept="image/*" multiple ref={imageRef} />
+        </div>
+        <button onClick={handleNativeFileShare} type="button">
+          Share your images!
+        </button>
+        <hr style={{ border: "1px dashed red", width: "100%" }} />
+        {/* --------------------------------------------------------- */}
+
+        <button onClick={captureTable}>Capture and share</button>
       </div>
-      <button onClick={handleNativeFileShare} type="button">
-        Share your images!
-      </button>
-      <hr style={{ border: "1px dashed red", width: "100%" }} />
-      {/* --------------------------------------------------------- */}
-      {imgurl && <img src={imgurl} alt="imgurl" width={200} />}
-
-      <button onClick={handleShare}>Capture and share</button>
-
-      <div className="table-container" ref={tableRef} id="printDom">
-        <table style={{ borderCollapse: "collapse" }}>
+      <div className="table-container" ref={tableRef}>
+        <table style={{ borderCollapse: "collapse" }} id="printDom">
           <thead>
             <tr>
               <th>Id</th>
@@ -135,6 +114,6 @@ export default function WhatsAppShare1() {
           </tbody>
         </table>
       </div>
-    </div>
+    </>
   );
 }
