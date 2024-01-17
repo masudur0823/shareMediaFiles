@@ -1,11 +1,9 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import data from "./data";
 import html2canvas from "html2canvas";
 
 export default function CaptureAndShare() {
-  const imageRef = useRef(null);
   const tableRef = useRef(null);
-  const [captureFile, setCaptureFile] = useState("");
 
   const captureTable = async () => {
     const tableElement = document.getElementById("printDom");
