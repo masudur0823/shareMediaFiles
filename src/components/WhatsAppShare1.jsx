@@ -41,7 +41,7 @@ export default function WhatsAppShare1() {
         });
         console.log(file);
         setTest(file);
-        // Now you can use the 'file' object as needed (e.g., upload, download, etc.)
+        // we can use the 'file' object as needed (e.g., upload, download, etc.)
       });
     } catch (error) {
       console.error("Error capturing table:", error);

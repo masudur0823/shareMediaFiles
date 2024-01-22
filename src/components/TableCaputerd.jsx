@@ -6,32 +6,19 @@ function TableCapture() {
   const tableRef = useRef(null);
   const [img, setImg] = useState();
 
-  const chunkSize = 200; // Adjust as needed
-  const totalRows = data?.length;
-  const numChunks = Math.ceil(totalRows / chunkSize);
   const captureTable = async () => {
-    for (let i = 0; i < numChunks; i++) {
-      const chunkStart = i * chunkSize;
-      const chunkEnd = Math.min(chunkStart + chunkSize, totalRows);
-
-      // Temporarily hide rows outside the current chunk
-      const rows = tableRef.current.querySelectorAll("tr");
-      for (let j = 0; j < rows.length; j++) {
-        rows[j].style.display = j >= chunkStart && j < chunkEnd ? "" : "none";
-      }
-
-      const canvas = await html2canvas(tableRef.current);
-      const imageDataURL = canvas.toDataURL("image/png");
-
-      // Do something with the image data URL, like download or store it
-      console.log(`Chunk ${i + 1} captured: ${imageDataURL}`);
-      setImg(imageDataURL);
-
-      // Restore row visibility for the next chunk
-      for (let j = 0; j < rows.length; j++) {
-        rows[j].style.display = "";
-      }
-    }
+    html2canvas(tableRef.current, {
+      scale: 3, // Set the scale factor (2 means double the size)
+    }).then(function (canvas) {
+      // const ccc = document.body.appendChild(canvas);
+      const dataUrl = canvas.toDataURL();
+      console.log(dataUrl);
+      setImg(dataUrl);
+      // canvas.toBlob((blob) => {
+      //   console.log(blob);
+      //   setImg(blob);
+      // });
+    });
   };
 
   return (
