@@ -1,6 +1,6 @@
+import html2canvas from "html2canvas";
 import { useState } from "react";
 import data from "./data";
-import html2canvas from "html2canvas";
 
 export default function CaptureAndShare() {
   const [imgs, setImgs] = useState([]);
@@ -25,8 +25,11 @@ export default function CaptureAndShare() {
           height: CropHeight,
           onclone: (clone) => {
             let additionalElement = document.createElement("div");
-            additionalElement.innerHTML = `<p>${index + 1}</p>`;
+            additionalElement.innerHTML = `<p>page:${index + 1}</p>`;
             additionalElement.style.color = "red";
+            additionalElement.style.position = "absolute";
+            additionalElement.style.top = `${CropHeight * index + 50}px`;
+            additionalElement.style.right = "50px";
 
             // Append the additional element to the cloned content
             clone.getElementById("printDom").appendChild(additionalElement);
@@ -41,27 +44,28 @@ export default function CaptureAndShare() {
         totalCanvas.push(canvas.toDataURL());
       }
       setImgs(totalCanvas);
-      const files = totalFile;
-      if (files?.length === 0) {
-        console.log(`No files selected`);
-      }
-      if (!navigator?.canShare) {
-        console.log(`Your browser doesn't support the Web Share API.`);
-      }
-      if (navigator?.canShare({ files })) {
-        try {
-          navigator?.share({
-            files,
-            title: "Images",
-            text: "Beautiful images",
-          });
-          console.log(`Shared!`);
-        } catch (error) {
-          console.log(`Error: ${error.message}`);
-        }
-      } else {
-        console.log(`Your system doesn't support sharing these files.`);
-      }
+      console.log(totalFile);
+      // const files = totalFile;
+      // if (files?.length === 0) {
+      //   console.log(`No files selected`);
+      // }
+      // if (!navigator?.canShare) {
+      //   console.log(`Your browser doesn't support the Web Share API.`);
+      // }
+      // if (navigator?.canShare({ files })) {
+      //   try {
+      //     navigator?.share({
+      //       files,
+      //       title: "Images",
+      //       text: "Beautiful images",
+      //     });
+      //     console.log(`Shared!`);
+      //   } catch (error) {
+      //     console.log(`Error: ${error.message}`);
+      //   }
+      // } else {
+      //   console.log(`Your system doesn't support sharing these files.`);
+      // }
       // ------------------------------------------------- +++++++++++++++++++----------
       // ------------------------------------------------- +++++++++++++++++++----------
       // ------------------------------------------------- +++++++++++++++++++----------
@@ -138,7 +142,10 @@ export default function CaptureAndShare() {
         {/* <button onClick={captureTable}>Capture and share</button> */}
       </div>
       <div className="table-container">
-        <div id="printDom">
+        <div
+          id="printDom"
+          style={{ position: "relative", zIndex: -1, width: "700px" }}
+        >
           <h2 style={{ marginBottom: 10, textAlign: "center" }}>
             Table Caption
           </h2>
