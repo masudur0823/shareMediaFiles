@@ -16,56 +16,64 @@ export default function CaptureAndShare() {
       console.log("OriginalImageHeight:", OriginalImageHeight);
       const CropHeight = 500;
       const totalPages = Math.ceil(OriginalImageHeight / CropHeight);
+      console.log(totalPages);
       const totalCanvas = [];
-      const totalFile = [];
+      const files = [];
       for (let index = 0; index < totalPages; index++) {
         const canvas = await html2canvas(tableElement, {
           scale: 1,
           y: index === 0 ? 0 : CropHeight * index,
           height: CropHeight,
           onclone: (clone) => {
+            // ---------
             let additionalElement = document.createElement("div");
-            additionalElement.innerHTML = `<p>page:${index + 1}</p>`;
+            // additionalElement.innerHTML =
+            //   index < 9
+            //     ? `<p>page: 0${index + 1}</p>`
+            //     : `<p>page: ${index + 1}</p>`;
+            additionalElement.innerHTML = `<p>page:${index}</p>`;
             additionalElement.style.color = "red";
             additionalElement.style.position = "absolute";
-            additionalElement.style.top = `${CropHeight * index + 50}px`;
-            additionalElement.style.right = "50px";
+            additionalElement.style.top = `${CropHeight * index + 20}px`;
+            additionalElement.style.right = "20px";
 
             // Append the additional element to the cloned content
             clone.getElementById("printDom").appendChild(additionalElement);
           },
         });
         canvas.toBlob((blob) => {
-          const file = new File([blob], `table_capture${index}.png`, {
+          const file = new File([blob], `table_capture${index + 1}.png`, {
             type: "image/png",
           });
-          totalFile.push(file);
+          files.push(file);
         });
         totalCanvas.push(canvas.toDataURL());
       }
       setImgs(totalCanvas);
-      console.log(totalFile);
-      // const files = totalFile;
-      // if (files?.length === 0) {
-      //   console.log(`No files selected`);
-      // }
-      // if (!navigator?.canShare) {
-      //   console.log(`Your browser doesn't support the Web Share API.`);
-      // }
-      // if (navigator?.canShare({ files })) {
-      //   try {
-      //     navigator?.share({
-      //       files,
-      //       title: "Images",
-      //       text: "Beautiful images",
-      //     });
-      //     console.log(`Shared!`);
-      //   } catch (error) {
-      //     console.log(`Error: ${error.message}`);
-      //   }
-      // } else {
-      //   console.log(`Your system doesn't support sharing these files.`);
-      // }
+      console.log(files);
+      if (files) {
+        if (files?.length === 0) {
+          console.log(`No files selected`);
+        }
+        if (!navigator?.canShare) {
+          console.log(`Your browser doesn't support the Web Share API.`);
+        }
+        if (navigator?.canShare({ files })) {
+          try {
+            navigator?.share({
+              files,
+              title: "Images",
+              text: "Beautiful images",
+            });
+            console.log(`Shared!`);
+          } catch (error) {
+            console.log(`Error: ${error.message}`);
+          }
+        } else {
+          console.log(`Your system doesn't support sharing these files.`);
+        }
+      }
+
       // ------------------------------------------------- +++++++++++++++++++----------
       // ------------------------------------------------- +++++++++++++++++++----------
       // ------------------------------------------------- +++++++++++++++++++----------
@@ -122,7 +130,6 @@ export default function CaptureAndShare() {
   return (
     <>
       <div className="main-layout">
-        {/* <img src={img} alt="" /> */}
         <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
           {imgs.map((img, index) => (
             <img
@@ -142,10 +149,7 @@ export default function CaptureAndShare() {
         {/* <button onClick={captureTable}>Capture and share</button> */}
       </div>
       <div className="table-container">
-        <div
-          id="printDom"
-          style={{ position: "relative", zIndex: -1, width: "700px" }}
-        >
+        <div id="printDom" style={{ position: "relative", zIndex: -1 }}>
           <h2 style={{ marginBottom: 10, textAlign: "center" }}>
             Table Caption
           </h2>
