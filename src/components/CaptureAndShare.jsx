@@ -14,7 +14,7 @@ export default function CaptureAndShare() {
       const canvasHeight = await html2canvas(tableElement, { scale: 1 });
       const OriginalImageHeight = canvasHeight.height;
       console.log("OriginalImageHeight:", OriginalImageHeight);
-      const CropHeight = 3408 / 3;
+      const CropHeight = 1000;
       const totalPages = Math.ceil(OriginalImageHeight / CropHeight) + 1;
       console.log(totalPages);
       const totalCanvas = [];
@@ -35,6 +35,7 @@ export default function CaptureAndShare() {
             additionalElement.style.position = "absolute";
             additionalElement.style.top = `${CropHeight * index + 20}px`;
             additionalElement.style.right = "20px";
+            // additionalElement.style.zIndex = "20px";
 
             // Append the additional element to the cloned content
             clone.getElementById("printDom").appendChild(additionalElement);
@@ -149,7 +150,10 @@ export default function CaptureAndShare() {
         {/* <button onClick={captureTable}>Capture and share</button> */}
       </div>
       <div className="table-container">
-        <div id="printDom" style={{ position: "relative", zIndex: -1 }}>
+        <div
+          id="printDom"
+          style={{ position: "relative", zIndex: -1, width: 1000 }}
+        >
           <h2 style={{ marginBottom: 10, textAlign: "center" }}>
             Table Caption
           </h2>
