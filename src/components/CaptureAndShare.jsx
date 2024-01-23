@@ -14,8 +14,8 @@ export default function CaptureAndShare() {
       const canvasHeight = await html2canvas(tableElement, { scale: 1 });
       const OriginalImageHeight = canvasHeight.height;
       console.log("OriginalImageHeight:", OriginalImageHeight);
-      const CropHeight = 500;
-      const totalPages = Math.ceil(OriginalImageHeight / CropHeight);
+      const CropHeight = 3408 / 3;
+      const totalPages = Math.ceil(OriginalImageHeight / CropHeight) + 1;
       console.log(totalPages);
       const totalCanvas = [];
       const files = [];
@@ -27,11 +27,10 @@ export default function CaptureAndShare() {
           onclone: (clone) => {
             // ---------
             let additionalElement = document.createElement("div");
-            // additionalElement.innerHTML =
-            //   index < 9
-            //     ? `<p>page: 0${index + 1}</p>`
-            //     : `<p>page: ${index + 1}</p>`;
-            additionalElement.innerHTML = `<p>page:${index}</p>`;
+            additionalElement.innerHTML =
+              index < 9
+                ? `<p>page: 0${index + 1}</p>`
+                : `<p>page: ${index + 1}</p>`;
             additionalElement.style.color = "red";
             additionalElement.style.position = "absolute";
             additionalElement.style.top = `${CropHeight * index + 20}px`;
@@ -50,8 +49,9 @@ export default function CaptureAndShare() {
         totalCanvas.push(canvas.toDataURL());
       }
       setImgs(totalCanvas);
-      console.log(files);
+
       if (files) {
+        console.log("files", files);
         if (files?.length === 0) {
           console.log(`No files selected`);
         }
