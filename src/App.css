@@ -8,6 +8,7 @@ body {
   gap: 20px;
   align-items: center;
 }
+
 th,
 td {
   padding: 10px;
@@ -16,4 +17,5 @@ td {
 
 .table-container {
   overflow: auto;
+  position: relative;
 }

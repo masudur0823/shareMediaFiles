@@ -1,52 +1,99 @@
-import html2canvas from "html2canvas";
-import { useRef, useState } from "react";
-import data from "./data";
+// import autoTable from "jspdf-autotable";
 import jsPDF from "jspdf";
-
+import { useRef } from "react";
+import generatePDF, { Margin } from "react-to-pdf";
+import data from "./data";
 export default function CaptureAndShare() {
   const tableRef = useRef();
-  const [img, setImg] = useState();
 
-  const captureDomAndShare = async () => {
-    // html2canvas(tableRef.current, {
-    //   scale: 1, // Set the scale factor (2 means double the size)
-    // }).then(function (canvas) {
-    //   const dataUrl = canvas.toDataURL();
-    //   //   console.log(dataUrl);
-    //   setImg(dataUrl);
-    //   const pdf = jsPDF();
-    //   //addImage(imageData, format, x, y, width, height, alias, compression, rotation)
-    //   //   pdf.addImage(dataUrl, "JPEG", 0, 0, 20, 20);
-    //   //   pdf.addImage(dataUrl, "JPEG", 0, 0, 180, 180);
-    //   //   pdf.addPage("a4", "p");
-    //   //   pdf.addImage(dataUrl, "JPEG", 0, 0, 180, 180);
-    //   //   pdf.addPage("a4", "p");
-    //   //   pdf.addImage(dataUrl, "JPEG", 0, 0, 180, 180);
-    //   //   console.log(pdf);
-    //   //   pdf.save("doc-01");
-    // });
+  const captureDomAndShare1 = async () => {
+    const source = document.getElementById("printDom");
+    const pdf = new jsPDF({
+      orientation: "p",
+      unit: "px",
+      format: [1950, 2000],
+      putOnlyUsedFonts: true,
+      floatPrecision: 16, // or "smart", default is 16
+    });
 
-    const pdf = jsPDF("p", "pt", "a4");
-    pdf.html(document.getElementById("printDom"), {
+    await pdf.html(source, {
       callback: function (doc) {
         doc.save();
       },
-      x: 15,
-      y: 15,
-      // width: 3000,
-      // margin: 10,
-
-      autoPaging: "text",
+      x: 5,
+      y: 5,
       margin: [10, 10, 10, 10],
+      autoPaging: "text",
     });
+
+    // send to navigator.share
+    // ----------------------------------
+    // ----------------------------------
+    // console.log(pdf);
+    // pdf.text("Hello, this is your PDF!", 20, 20);
+    const pdfBlob = pdf.output("blob");
+    console.log(pdfBlob);
+    const files = [
+      new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
+    ];
+    console.log(files);
+    if (files) {
+      if (files?.length === 0) {
+        console.log(`No files selected`);
+      }
+      if (!navigator?.canShare) {
+        console.log(`Your browser doesn't support the Web Share API.`);
+      }
+      if (navigator?.canShare({ files })) {
+        try {
+          navigator?.share({
+            files,
+            title: "Images",
+            text: "Beautiful images",
+          });
+          console.log(`Shared!`);
+        } catch (error) {
+          console.log(`Error: ${error.message}`);
+        }
+      } else {
+        console.log(`Your system doesn't support sharing these files.`);
+      }
+    }
+  };
+
+  const captureDomAndShare2 = async () => {
+    const pdf = generatePDF(tableRef, {
+      filename: "page.pdf",
+      method: "build",
+      page: {
+        margin: Margin.MEDIUM,
+      },
+    });
+    const pdfBlob = pdf.then((dd) => dd.output("blob"));
+    const shareData = {
+      title: "Share PDF",
+      files: [new File([pdfBlob], "example.pdf", { type: "application/pdf" })],
+    };
+    console.log(shareData);
+    if (navigator.share) {
+      navigator
+        .share(shareData)
+        .then(() => {
+          console.log("PDF shared successfully");
+        })
+        .catch((error) => {
+          console.error("Error sharing PDF:", error);
+        });
+    } else {
+      alert("Sorry, the Share API is not supported in your browser.");
+    }
   };
 
   return (
     <>
+      <button onClick={captureDomAndShare2}>Download PDF</button>
       <div className="main-layout">
-        <img src={img} alt="" style={{ border: "1px solid red" }} />
-
-        <button onClick={captureDomAndShare} type="button">
+        <button onClick={captureDomAndShare1} type="button">
           Share Table data!
         </button>
         <hr style={{ border: "1px dashed red", width: "100%" }} />
@@ -54,18 +101,29 @@ export default function CaptureAndShare() {
 
         {/* <button onClick={captureTable}>Capture and share</button> */}
       </div>
-      <div className="table-container">
-        <div
-          ref={tableRef}
-          id="printDom"
-          style={{ position: "relative", width: "100%" }}
-        >
+      <div style={{ overflow: "auto" }}>
+        <div id="printDom" ref={tableRef} style={{ width: "fit-content" }}>
           <h2 style={{ marginBottom: 10, textAlign: "center" }}>
-            Table Caption
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Officiis
+            officia aliquam nihil nobis, et quisquam laboriosam quibusdam esse
+            facilis aspernatur, quaerat quo a dignissimos! Dolor sapiente sequi
+            laudantium delectus voluptatem ex eum atque assumenda, aperiam illo
+            sint doloremque consequatur quibusdam quas rerum cumque blanditiis,
+            minima commodi fugit inventore velit. Ratione!
           </h2>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
             <thead>
               <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Gender</th>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Email</th>
+                <th>Gender</th>
                 <th>Id</th>
                 <th>First Name</th>
                 <th>Last Name</th>
@@ -77,6 +135,14 @@ export default function CaptureAndShare() {
               {data?.map((item, index) => (
                 <tr key={index}>
                   <td>{index}</td>
+                  <td>{item?.first_name}</td>
+                  <td>{item?.last_name}</td>
+                  <td>{item?.email}</td>
+                  <td>{item?.gender}</td>
+                  <td>{item?.first_name}</td>
+                  <td>{item?.last_name}</td>
+                  <td>{item?.email}</td>
+                  <td>{item?.gender}</td>
                   <td>{item?.first_name}</td>
                   <td>{item?.last_name}</td>
                   <td>{item?.email}</td>
