@@ -1,12 +1,10 @@
 import "./App.css";
-// import TableCapture from "./components/TableCaputerd";
-import CaptureAndShare from "./components/CaptureAndShare";
+import CaptureAndSharePdf from "./components/CaptureAndSharePdf";
 
 export default function App() {
   return (
     <>
-      <CaptureAndShare />
-      {/* <TableCapture /> */}
+      <CaptureAndSharePdf />
     </>
   );
 }
