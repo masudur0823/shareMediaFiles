@@ -25,16 +25,19 @@ export default function CaptureAndShare() {
     //   //   console.log(pdf);
     //   //   pdf.save("doc-01");
     // });
-    const DOM = document.getElementById("printDom");
-    console.log(DOM);
-    const pdf = jsPDF();
+
+    const pdf = jsPDF("p", "pt", "a4");
     pdf.html(document.getElementById("printDom"), {
-      x: 15,
-      y: 15,
-      width: 300,
       callback: function (doc) {
         doc.save();
       },
+      x: 15,
+      y: 15,
+      // width: 3000,
+      // margin: 10,
+
+      autoPaging: "text",
+      margin: [10, 10, 10, 10],
     });
   };
 
