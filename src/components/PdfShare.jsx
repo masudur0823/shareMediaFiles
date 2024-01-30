@@ -7,21 +7,89 @@ export default function PdfShare() {
 
   const captureDomAndShare1 = async () => {
     const source = document.getElementById("printDom");
+    const offsetWidth = document.getElementById("printDom").offsetWidth;
     const pdf = new jsPDF({
       orientation: "p",
       unit: "px",
-      format: [1950, 2000],
+      format: [offsetWidth + 90, offsetWidth + 90], //[x,y]
       putOnlyUsedFonts: true,
-      floatPrecision: 16, // or "smart", default is 16
+      floatPrecision: "smart", // or "smart", default is 16
     });
 
+    // const addContentToEveryPage = (pdf, totalPages, additionalContent) => {
+    //   for (let i = 1; i <= totalPages; i++) {
+    //     if (i > 1) {
+    //       pdf.setPage(i);
+    //       pdf.html(additionalContent, { x: 10, y: 10 });
+    //     }
+    //   }
+    // };
+
+    // const addPageContent = (pdf, totalPages) => {
+    //   for (let i = 1; i <= totalPages; i++) {
+    //     if (i > 1) {
+    //       pdf.text(10, 10, `Page kkk`);
+    //     }
+    //   }
+    // };
+
+    const addPageNumbers = (pdf, totalPages) => {
+      for (let i = 1; i <= totalPages; i++) {
+        pdf.setPage(i);
+        pdf.text(
+          10,
+          pdf.internal.pageSize.height - 10,
+          `Page ${i} of ${totalPages}`
+        );
+      }
+    };
+
     await pdf.html(source, {
-      //   callback: function (doc) {
-      //     doc.save();
-      //   },
+      callback: function (doc) {
+        //   const additionalContent = `
+        //   <div>
+        //     <h2>Additional Content on Every Page</h2>
+        //     <p>This content is added to every page of the PDF.</p>
+        //   </div>
+        // `;
+        //   addContentToEveryPage(doc, doc.getNumberOfPages(), additionalContent);
+        //   addPageContent(doc, doc.getNumberOfPages());
+        addPageNumbers(doc, doc.getNumberOfPages());
+        // doc.save();
+        const pdfBlob = doc.output("blob");
+        console.log(pdfBlob);
+        const files = [
+          new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
+        ];
+        console.log(files);
+        if (files) {
+          if (files?.length === 0) {
+            console.log(`No files selected`);
+          }
+          if (!navigator?.canShare) {
+            console.log(`Your browser doesn't support the Web Share API.`);
+          }
+          if (navigator?.canShare({ files })) {
+            try {
+              navigator?.share({
+                files,
+                title: "Images",
+                text: "Beautiful images",
+              });
+              console.log(`Shared!`);
+            } catch (error) {
+              console.log(`Error: ${error.message}`);
+            }
+          } else {
+            console.log(`Your system doesn't support sharing these files.`);
+          }
+        }
+      },
+      width: 1,
       x: 5,
       y: 5,
-      margin: [10, 10, 10, 10],
+      margin: 30,
+      // margin: [100, 30, 30, 30],
       autoPaging: "text",
     });
 
@@ -30,38 +98,11 @@ export default function PdfShare() {
     // ----------------------------------
     // console.log(pdf);
     // pdf.text("Hello, this is your PDF!", 20, 20);
-    const pdfBlob = pdf.output("blob");
-    console.log(pdfBlob);
-    const files = [
-      new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
-    ];
-    console.log(files);
-    if (files) {
-      if (files?.length === 0) {
-        console.log(`No files selected`);
-      }
-      if (!navigator?.canShare) {
-        console.log(`Your browser doesn't support the Web Share API.`);
-      }
-      if (navigator?.canShare({ files })) {
-        try {
-          navigator?.share({
-            files,
-            title: "Images",
-            text: "Beautiful images",
-          });
-          console.log(`Shared!`);
-        } catch (error) {
-          console.log(`Error: ${error.message}`);
-        }
-      } else {
-        console.log(`Your system doesn't support sharing these files.`);
-      }
-    }
   };
 
   return (
     <>
+      <h1>gfgggg</h1>
       <div className="main-layout">
         <button onClick={captureDomAndShare1} type="button">
           Share Table data!
@@ -82,14 +123,14 @@ export default function PdfShare() {
             minima commodi fugit inventore velit. Ratione!
           </h2>
           <table style={{ borderCollapse: "collapse", width: "100%" }}>
-            <thead>
+            <thead id="theadDom">
               <tr>
                 <th>Id</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
                 <th>Gender</th>
-                <th>Id</th>
+                {/* <th>Id</th>
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
@@ -98,7 +139,7 @@ export default function PdfShare() {
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Email</th>
-                <th>Gender</th>
+                <th>Gender</th> */}
               </tr>
             </thead>
             <tbody>
@@ -109,14 +150,14 @@ export default function PdfShare() {
                   <td>{item?.last_name}</td>
                   <td>{item?.email}</td>
                   <td>{item?.gender}</td>
-                  <td>{item?.first_name}</td>
+                  {/* <td>{item?.first_name}</td>
                   <td>{item?.last_name}</td>
                   <td>{item?.email}</td>
                   <td>{item?.gender}</td>
                   <td>{item?.first_name}</td>
                   <td>{item?.last_name}</td>
                   <td>{item?.email}</td>
-                  <td>{item?.gender}</td>
+                  <td>{item?.gender}</td> */}
                 </tr>
               ))}
             </tbody>
