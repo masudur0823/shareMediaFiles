@@ -1,10 +1,10 @@
 import "./App.css";
-import CaptureAndSharePdf from "./components/CaptureAndSharePdf";
+import PdfShare from "./components/PdfShare";
 
 export default function App() {
   return (
     <>
-      <CaptureAndSharePdf />
+      <PdfShare />
     </>
   );
 }
