@@ -1,10 +1,13 @@
 import "./App.css";
-import PdfShare from "./components/PdfShare";
+import User from "./pages/User";
+// import SharePdf from "./components/final/SharePdf";
 
 export default function App() {
   return (
     <>
-      <PdfShare />
+      {/* pages */}
+      <User/>
+      {/* <SharePdf/> */}
     </>
   );
 }

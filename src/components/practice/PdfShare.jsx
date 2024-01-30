@@ -32,7 +32,8 @@ export default function PdfShare() {
     // const addPageContent = (pdf, totalPages) => {
     //   for (let i = 1; i <= totalPages; i++) {
     //     if (i > 1) {
-    //       pdf.text(10, 10, `Page kkk`);
+    //       pdf.setPage(i);
+    //       pdf.text(20, 20, `Page kkk`);
     //     }
     //   }
     // };
@@ -50,16 +51,18 @@ export default function PdfShare() {
 
     await pdf.html(source, {
       callback: function (doc) {
-        //   const additionalContent = `
-        //   <div>
-        //     <h2>Additional Content on Every Page</h2>
-        //     <p>This content is added to every page of the PDF.</p>
-        //   </div>
-        // `;
+        const additionalContent = `
+          <div>
+            <h2>Additional Content on Every Page</h2>
+            <p>This content is added to every page of the PDF.</p>
+          </div>
+        `;
         //   addContentToEveryPage(doc, doc.getNumberOfPages(), additionalContent);
-        //   addPageContent(doc, doc.getNumberOfPages());
+        pdf.html(additionalContent, { x: 10, y: 10 });
+        pdf.text(20, 20, `Page kkk`);
+        // addPageContent(doc, doc.getNumberOfPages());
         addPageNumbers(doc, doc.getNumberOfPages());
-        // doc.save();
+        doc.save();
       },
       width: 1,
       x: offsetWidth < 900 ? 200 : 5,
@@ -74,34 +77,34 @@ export default function PdfShare() {
     // ----------------------------------
     // console.log(pdf);
     // pdf.text("Hello, this is your PDF!", 20, 20);
-    const pdfBlob = await pdf.output("blob");
-    console.log(pdfBlob);
-    const files = [
-      new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
-    ];
-    console.log(files);
-    if (files) {
-      if (files?.length === 0) {
-        console.log(`No files selected`);
-      }
-      if (!navigator?.canShare) {
-        console.log(`Your browser doesn't support the Web Share API.`);
-      }
-      if (navigator?.canShare({ files })) {
-        try {
-          navigator?.share({
-            files,
-            title: "Images",
-            text: "Beautiful images",
-          });
-          console.log(`Shared!`);
-        } catch (error) {
-          console.log(`Error: ${error.message}`);
-        }
-      } else {
-        console.log(`Your system doesn't support sharing these files.`);
-      }
-    }
+    // const pdfBlob = await pdf.output("blob");
+    // console.log(pdfBlob);
+    // const files = [
+    //   new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
+    // ];
+    // console.log(files);
+    // if (files) {
+    //   if (files?.length === 0) {
+    //     console.log(`No files selected`);
+    //   }
+    //   if (!navigator?.canShare) {
+    //     console.log(`Your browser doesn't support the Web Share API.`);
+    //   }
+    //   if (navigator?.canShare({ files })) {
+    //     try {
+    //       navigator?.share({
+    //         files,
+    //         title: "Images",
+    //         text: "Beautiful images",
+    //       });
+    //       console.log(`Shared!`);
+    //     } catch (error) {
+    //       console.log(`Error: ${error.message}`);
+    //     }
+    //   } else {
+    //     console.log(`Your system doesn't support sharing these files.`);
+    //   }
+    // }
   };
 
   return (

@@ -19,3 +19,9 @@ td {
   overflow: auto;
   position: relative;
 }
+
+button {
+  padding: 5px 10px;
+  cursor: pointer;
+  text-transform: capitalize;
+}
