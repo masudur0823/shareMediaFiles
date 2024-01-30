@@ -8,10 +8,14 @@ export default function PdfShare() {
   const captureDomAndShare1 = async () => {
     const source = document.getElementById("printDom");
     const offsetWidth = document.getElementById("printDom").offsetWidth;
+    console.log(offsetWidth);
     const pdf = new jsPDF({
       orientation: "p",
       unit: "px",
-      format: [offsetWidth + 90, offsetWidth + 90], //[x,y]
+      format: [
+        offsetWidth < 900 ? 1000 : offsetWidth + 90,
+        offsetWidth < 900 ? 1000 : offsetWidth + 90,
+      ], //[x,y]
       putOnlyUsedFonts: true,
       floatPrecision: "smart", // or "smart", default is 16
     });
@@ -86,7 +90,7 @@ export default function PdfShare() {
         }
       },
       width: 1,
-      x: 5,
+      x: offsetWidth < 900 ? 200 : 5,
       y: 5,
       margin: 30,
       // margin: [100, 30, 30, 30],
