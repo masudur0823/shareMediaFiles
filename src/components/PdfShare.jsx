@@ -60,34 +60,6 @@ export default function PdfShare() {
         //   addPageContent(doc, doc.getNumberOfPages());
         addPageNumbers(doc, doc.getNumberOfPages());
         // doc.save();
-        const pdfBlob = doc.output("blob");
-        console.log(pdfBlob);
-        const files = [
-          new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
-        ];
-        console.log(files);
-        if (files) {
-          if (files?.length === 0) {
-            console.log(`No files selected`);
-          }
-          if (!navigator?.canShare) {
-            console.log(`Your browser doesn't support the Web Share API.`);
-          }
-          if (navigator?.canShare({ files })) {
-            try {
-              navigator?.share({
-                files,
-                title: "Images",
-                text: "Beautiful images",
-              });
-              console.log(`Shared!`);
-            } catch (error) {
-              console.log(`Error: ${error.message}`);
-            }
-          } else {
-            console.log(`Your system doesn't support sharing these files.`);
-          }
-        }
       },
       width: 1,
       x: offsetWidth < 900 ? 200 : 5,
@@ -102,6 +74,34 @@ export default function PdfShare() {
     // ----------------------------------
     // console.log(pdf);
     // pdf.text("Hello, this is your PDF!", 20, 20);
+    const pdfBlob = await pdf.output("blob");
+    console.log(pdfBlob);
+    const files = [
+      new File([pdfBlob], "example.pdf", { type: "application/pdf" }),
+    ];
+    console.log(files);
+    if (files) {
+      if (files?.length === 0) {
+        console.log(`No files selected`);
+      }
+      if (!navigator?.canShare) {
+        console.log(`Your browser doesn't support the Web Share API.`);
+      }
+      if (navigator?.canShare({ files })) {
+        try {
+          navigator?.share({
+            files,
+            title: "Images",
+            text: "Beautiful images",
+          });
+          console.log(`Shared!`);
+        } catch (error) {
+          console.log(`Error: ${error.message}`);
+        }
+      } else {
+        console.log(`Your system doesn't support sharing these files.`);
+      }
+    }
   };
 
   return (
