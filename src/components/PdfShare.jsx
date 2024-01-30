@@ -16,9 +16,9 @@ export default function PdfShare() {
     });
 
     await pdf.html(source, {
-      callback: function (doc) {
-        doc.save();
-      },
+      //   callback: function (doc) {
+      //     doc.save();
+      //   },
       x: 5,
       y: 5,
       margin: [10, 10, 10, 10],
