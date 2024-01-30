@@ -9,7 +9,7 @@ function User() {
       <h1>There is some list of Dummy Users:</h1>
       <div
         style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}
-        onClick={() => sharePdf("printDom")}
+        onClick={() => sharePdf("printDom", "userTable")}
       >
         <button>share pdf</button>
         {/* <button
