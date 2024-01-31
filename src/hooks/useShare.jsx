@@ -74,6 +74,7 @@ const useShare = () => {
           title: "Pdf !",
         });
         console.log(`Shared!`);
+        setGetFile();
       } catch (error) {
         console.log(`Error: ${error.message}`);
       }
@@ -88,7 +89,7 @@ const useShare = () => {
   //     title: "Pdf !",
   //   });
   // }
-  return { sharePdf, isLoading, getFile, first };
+  return { sharePdf, isLoading, getFile, first, navigatorShare };
 };
 
 export default useShare;

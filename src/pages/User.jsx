@@ -3,15 +3,15 @@ import useShare from "../hooks/useShare";
 import dummyData from "../mockData/dummyData";
 
 function User() {
-  const { sharePdf, isLoading, getFile, first } = useShare();
-  const shareNavigator = () => {
-    const input = document.getElementById("files");
-    const files = input.files;
-    navigator?.share({
-      files: files,
-      title: "Pdf !",
-    });
-  };
+  const { sharePdf, isLoading, getFile, navigatorShare } = useShare();
+  // const shareNavigator = () => {
+  //   const input = document.getElementById("files");
+  //   const files = input.files;
+  //   navigator?.share({
+  //     files: files,
+  //     title: "Pdf !",
+  //   });
+  // };
   return (
     <>
       {isLoading ? "Loading..." : ""}
@@ -20,13 +20,16 @@ function User() {
       <h1>There is some list of Dummy Users:</h1>
       <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
         {!getFile ? (
-          <button onClick={() => sharePdf("printDom", "userTable")}>
+          <button
+            disabled={isLoading}
+            onClick={() => sharePdf("printDom", "userTable")}
+          >
             Prepare to Share
           </button>
         ) : (
           <button
             style={{ margiLeft: "10px" }}
-            onClick={first === 1 ? shareNavigator : 0}
+            onClick={() => navigatorShare(getFile)}
           >
             Share File
           </button>
