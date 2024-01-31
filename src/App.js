@@ -1,5 +1,6 @@
 import "./App.css";
 import User from "./pages/User";
+// import CaptureAndShare from "./components/practice/CaptureAndShare";
 // import SharePdf from "./components/final/SharePdf";
 
 export default function App() {
@@ -8,6 +9,7 @@ export default function App() {
       {/* pages */}
       <User/>
       {/* <SharePdf/> */}
+      {/* <CaptureAndShare/> */}
     </>
   );
 }

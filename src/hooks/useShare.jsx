@@ -1,15 +1,21 @@
 import jsPDF from "jspdf";
+import { useState } from "react";
 
 const useShare = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [getFile, setGetFile] = useState();
+  const [first, setfirst] = useState(0);
+  // console.log(getFile);
   const sharePdf = async (id, filename) => {
+    setIsLoading(true);
     const source = document.getElementById(id);
     const offsetWidth = document.getElementById(id).offsetWidth;
     const pdf = new jsPDF({
       orientation: "p",
       unit: "px",
       format: [
-        offsetWidth < 900 ? 1000 : offsetWidth + 90,
-        offsetWidth < 900 ? 1000 : offsetWidth + 90,
+        offsetWidth < 900 ? 1000 : offsetWidth + 350,
+        offsetWidth < 900 ? 1000 : offsetWidth + 350,
       ], //[x,y]
       putOnlyUsedFonts: true,
       floatPrecision: "smart", // or "smart", default is 16
@@ -29,7 +35,18 @@ const useShare = () => {
     await pdf.html(source, {
       callback: function (doc) {
         addPageNumbers(doc, doc.getNumberOfPages());
+        // doc.save();
+        setIsLoading(false);
         // send natigator to share
+        const pdfBlob = pdf.output("blob");
+
+        const files = [
+          new File([pdfBlob], `${filename}.pdf`, { type: "application/pdf" }),
+        ];
+        console.log("Files: ", files);
+        setGetFile(files);
+        console.log("shared to the state !");
+        setfirst(1);
       },
       width: 1,
       x: offsetWidth < 900 ? 200 : 5,
@@ -41,13 +58,9 @@ const useShare = () => {
     // ----------------------------------
     // ----------------------------------
     // pdf.text("Hello, this is your PDF!", 20, 20);
+  };
 
-    const pdfBlob = pdf.output("blob");
-
-    const files = [
-      new File([pdfBlob], `${filename}.pdf`, { type: "application/pdf" }),
-    ];
-
+  const navigatorShare = async (files) => {
     if (files?.length === 0) {
       console.log(`No files selected`);
     }
@@ -56,7 +69,7 @@ const useShare = () => {
     }
     if (navigator?.canShare({ files })) {
       try {
-        navigator?.share({
+        await navigator?.share({
           files,
           title: "Pdf !",
         });
@@ -68,7 +81,14 @@ const useShare = () => {
       console.log(`Your system doesn't support sharing these files.`);
     }
   };
-  return sharePdf;
+
+  // if (first === 1) {
+  //   navigator?.share({
+  //     files: getFile,
+  //     title: "Pdf !",
+  //   });
+  // }
+  return { sharePdf, isLoading, getFile, first };
 };
 
 export default useShare;

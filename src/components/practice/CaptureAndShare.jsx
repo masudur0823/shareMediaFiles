@@ -26,6 +26,7 @@ export default function CaptureAndShare() {
           height: CropHeight,
           onclone: (clone) => {
             // ---------
+
             let additionalElement = document.createElement("div");
             additionalElement.innerHTML =
               index < 9
@@ -41,6 +42,7 @@ export default function CaptureAndShare() {
             clone.getElementById("printDom").appendChild(additionalElement);
           },
         });
+
         canvas.toBlob((blob) => {
           const file = new File([blob], `table_capture${index + 1}.png`, {
             type: "image/png",
@@ -152,12 +154,22 @@ export default function CaptureAndShare() {
       <div className="table-container">
         <div
           id="printDom"
-          style={{ position: "relative", zIndex: -1, width: 1000 }}
+          style={{
+            position: "relative",
+            zIndex: -1,
+            paddingRight: "100px",
+            paddingLeft: "10px",
+          }}
         >
           <h2 style={{ marginBottom: 10, textAlign: "center" }}>
             Table Caption
           </h2>
-          <table style={{ borderCollapse: "collapse", margin: "0 auto" }}>
+          <table
+            style={{
+              borderCollapse: "collapse",
+              width: "100%",
+            }}
+          >
             <thead>
               <tr>
                 <th>Id</th>
